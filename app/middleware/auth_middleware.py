@@ -1,51 +1,26 @@
-import base64
 from fastapi import Request
 from fastapi.responses import JSONResponse
-
-
-# Hardcoded credentials (for now) 
-VALID_USERNAME = "admin"
-VALID_PASSWORD = "password"
-
-
-def validate_credentials(request: Request):
-    """
-    Validate Basic Auth credentials.
-    Returns user dict if valid, else None.
-    """
-    auth_header = request.headers.get("Authorization")
-
-    if not auth_header:
-        return None
-
-    try:
-        scheme, credentials = auth_header.split()
-
-        if scheme.lower() != "basic":
-            return None
-
-        decoded = base64.b64decode(credentials).decode("utf-8")
-        username, password = decoded.split(":")
-
-        if username == VALID_USERNAME and password == VALID_PASSWORD:
-            return {"username": username, "role": "admin"}
-
-    except Exception:
-        return None
-
-    return None
+from app.core.security import is_token_valid
 
 
 async def auth_middleware(request: Request, call_next):
-    user = validate_credentials(request)
 
-    if not user:
+    # Allow login + docs without token
+    if request.url.path in [
+        "/auth/login",
+        "/docs",
+        "/openapi.json",
+        "/redoc",
+    ]:
+        return await call_next(request)
+
+    token = request.headers.get("Authorization")
+
+    if not token or not is_token_valid(token):
         return JSONResponse(
             status_code=401,
             content={"detail": "Unauthorized"},
         )
 
-    request.state.user = user
-
-    response = await call_next(request)
-    return response
+    request.state.user = {"token": token}
+    return await call_next(request)
