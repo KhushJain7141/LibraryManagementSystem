@@ -8,4 +8,4 @@ class Category(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, index=True, nullable=False)
 
-    books = relationship("Book", back_populates="category", cascade="all, delete")
+    books = relationship("Book", back_populates="category")

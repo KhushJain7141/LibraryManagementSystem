@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional,List
 
 
 class CategoryBase(BaseModel):
@@ -16,6 +16,17 @@ class CategoryUpdate(BaseModel):
 
 class CategoryResponse(CategoryBase):
     id: int
+    books: List[CategoryBook] = []
 
     class Config:
         orm_mode = True
+        
+class CategoryBook(BaseModel):
+    id: int
+    title: str
+    publication_year: Optional[int]
+
+    class Config:
+        orm_mode = True
+        
+CategoryResponse.model_rebuild()

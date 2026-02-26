@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session,joinedload
 from app.model.category import Category
 
 
@@ -10,7 +10,7 @@ def create(db: Session, category: Category) -> Category:
 
 
 def get_by_id(db: Session, category_id: int) -> Category | None:
-    return db.query(Category).filter(Category.id == category_id).first()
+    return db.query(Category).options(joinedload(Category.books)).filter(Category.id == category_id).first()
 
 
 def get_by_name(db: Session, name: str) -> Category | None:
