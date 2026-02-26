@@ -10,8 +10,8 @@ class Book(Base):
     isbn = Column(String)
     publication_year = Column(Integer)
 
-    author_id = Column(Integer, ForeignKey("authors.id"))  # Creates a fk tablename.attributename
-    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
+    author_id = Column(Integer, ForeignKey("authors.id",ondelete="RESTRICT"),nullable=False)  # Creates a fk tablename.attributename
+    category_id = Column(Integer, ForeignKey("categories.id",ondelete="RESTRICT"), nullable=False)
     
     author = relationship("Author", back_populates="books")
     category = relationship("Category", back_populates="books")

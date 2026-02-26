@@ -10,7 +10,8 @@ class AuthorBase(BaseModel):
 
 # Used when creating
 class AuthorCreate(AuthorBase):
-    pass
+    name: str
+    bio: Optional[str] = None
 
 
 # Used when updating

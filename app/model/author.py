@@ -9,4 +9,4 @@ class Author(Base):  # Inherits from Base (in python extends keyword not used)
     name = Column(String, index=True)
     bio = Column(String)
 
-    books = relationship("Book", back_populates="author",cascade="all, delete")
+    books = relationship("Book", back_populates="author")
