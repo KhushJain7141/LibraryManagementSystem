@@ -13,14 +13,14 @@ def get_by_id(db: Session, book_id: int) -> Book | None:
     return db.query(Book).filter(Book.id == book_id).first()
 
 
-def get_all(
-    db: Session,
-    author_id: int | None = None,
-    category_id: int | None = None,
-    year: int | None = None,
-    limit: int | None = None,
-):
-    query = db.query(Book)
+from sqlalchemy.orm import joinedload
+
+def get_all(db: Session, author_id=None, category_id=None, year=None, limit=None):
+
+    query = db.query(Book).options(
+        joinedload(Book.author),
+        joinedload(Book.category)
+    )
 
     if author_id:
         query = query.filter(Book.author_id == author_id)
@@ -30,8 +30,6 @@ def get_all(
 
     if year:
         query = query.filter(Book.publication_year == year)
-
-    query = query.order_by(Book.title.asc())
 
     if limit:
         query = query.limit(limit)
