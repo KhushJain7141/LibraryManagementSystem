@@ -4,6 +4,9 @@ from app.core.security import is_token_valid
 
 
 async def auth_middleware(request: Request, call_next):
+    if request.method == "OPTIONS":
+        return await call_next(request)
+
 
     # Allow login + docs without token
     if request.url.path in [
