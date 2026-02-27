@@ -21,8 +21,18 @@ class AuthorUpdate(BaseModel):
 
 
 # Used in responses
-class AuthorResponse(AuthorBase):
+class AuthorResponse(BaseModel):
     id: int
+    name: str
+    books: List[AuthorBook] = []
+
+    class Config:
+        orm_mode = True
+        
+class AuthorBook(BaseModel):
+    id: int
+    title: str
+    publication_year: Optional[int]
 
     class Config:
         orm_mode = True
